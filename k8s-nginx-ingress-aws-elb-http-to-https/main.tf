@@ -30,3 +30,11 @@ provider "helm" {
 }
 
 data "aws_region" "current" {}
+
+resource "random_string" "suffix" {
+  length  = 5
+  upper   = false
+  lower   = true
+  number  = false
+  special = false
+}
