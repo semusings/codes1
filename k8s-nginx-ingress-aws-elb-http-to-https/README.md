@@ -1,8 +1,8 @@
 # aws k8s nginx ingress
 
-[Related Post]()
+This is related with this [Blog Post]()
 
-# Developer Guide
+# Deployment Guide
 
 1. Setup tfvars
 ```
