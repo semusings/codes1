@@ -1,2 +1,4 @@
-# FSQS (Frequently Searched Questions), Tips &amp; Tricks and Notes
+# FSQs, Tips &amp; Tricks and Notes
+
+Frequently Searched Questions (FSQs)
 
