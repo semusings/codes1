@@ -6,18 +6,18 @@ This is related with this [Blog Post]()
 
 ### Deployment Guide
 
-1. Setup tfvars
-```
+#### Setup tfvars
+```bash
 cp -R terraform.tfvars.example terraform.tfvars
 vi terraform.tfvars
 ```
 
-2. Initialize
-```
+#### Initialize
+```bash
 terraform init
 ```
 
-3. Apply
-```
+#### Apply
+```bash
 terraform apply
 ```
