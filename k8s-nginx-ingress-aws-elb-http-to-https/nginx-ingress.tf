@@ -1,14 +1,3 @@
-locals {
-  create_crt = var.certificate_arn == ""
-}
-
-resource "aws_iam_server_certificate" "ingress-nginx" {
-  count = local.create_crt ? 1 : 0
-  name = "ingress-nginx-${random_string.suffix.result}"
-  certificate_body = file("server-ca.pem")
-  private_key = file("server-key.pem")
-}
-
 resource "helm_release" "ingress-nginx" {
   name = "ingress-nginx"
   chart = "ingress-nginx"
@@ -29,11 +18,6 @@ controller:
       http: http
       https: http
     annotations:
-      %{ if local.create_crt }
-      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: ${aws_iam_server_certificate.ingress-nginx.0.arn}
-      %{else}
-      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: ${var.certificate_arn}
-      %{ endif }
       service.beta.kubernetes.io/aws-load-balancer-ssl-cert: ${var.certificate_arn}
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
       service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
