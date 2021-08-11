@@ -4,7 +4,7 @@ resource "helm_release" "ingress-nginx" {
   version = "3.33.0"
   repository = "https://kubernetes.github.io/ingress-nginx"
   namespace = "ingress-nginx"
-  create_namespace = false
+  create_namespace = true
   cleanup_on_fail = true
   atomic = true
   wait = true
