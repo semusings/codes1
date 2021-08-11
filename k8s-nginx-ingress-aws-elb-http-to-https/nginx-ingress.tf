@@ -30,7 +30,7 @@ controller:
       https: http
     annotations:
       %{ if local.create_crt }
-      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: ${aws_iam_server_certificate.ingress-nginx.arn}
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: ${aws_iam_server_certificate.ingress-nginx.0.arn}
       %{else}
       service.beta.kubernetes.io/aws-load-balancer-ssl-cert: ${var.certificate_arn}
       %{ endif }
