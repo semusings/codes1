@@ -1,2 +1,3 @@
 cluster_region = "us-east-1"
 cluster_kube_config = "~/.kube/config"
+certificate_arn = "<certificate_arn>"

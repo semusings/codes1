@@ -18,7 +18,7 @@ controller:
       http: http
       https: http
     annotations:
-      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: ${var.cert_arn}
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: ${var.certificate_arn}
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
       service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
       service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '3600'
