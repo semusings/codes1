@@ -25,7 +25,7 @@ build_docker() {
 
   docker build \
     -t "${stack}:${tag}" \
-    --file "${SCRIPT_DIR}/dockerfiles/${name}.dockerfile" .
+    --file "${SCRIPT_DIR}/docker/${name}.dockerfile" .
 
 }
 

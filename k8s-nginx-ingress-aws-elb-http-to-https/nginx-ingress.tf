@@ -13,6 +13,8 @@ resource "helm_release" "ingress-nginx" {
     <<-EOF
 # https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml
 controller:
+  config:
+    ssl-redirect: "true"
   service:
     targetPorts:
       http: http
@@ -24,6 +26,7 @@ controller:
       service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '3600'
     enableHttp: true
     enableHttps: true
+  replicaCount: 1
     EOF
   ]
 

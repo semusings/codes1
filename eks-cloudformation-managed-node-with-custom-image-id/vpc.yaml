@@ -1,0 +1,367 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'EKS VPC - Public and Private subnets'
+Parameters:
+
+  VpcId:
+    Type: String
+    Default: ""
+    Description: EKS VPC ID.
+
+  PrivateSubnet1ID:
+    Type: String
+    Default: ""
+    Description: Private subnet 1 ID within the VpcId.
+
+  PrivateSubnet2ID:
+    Type: String
+    Default: ""
+    Description: Private subnet 2 ID within the VpcId.
+
+  PublicSubnet1ID:
+    Type: String
+    Default: ""
+    Description: Public subnet 1 ID within the VpcId.
+
+  PublicSubnet2ID:
+    Type: String
+    Default: ""
+    Description: Public subnet 1 ID within the VpcId.
+
+  VpcBlock:
+    Type: String
+    Default: 10.0.0.0/16
+    Description: CIDR range for the whole EKS VPC. This should be a valid private (RFC 1918) CIDR range.
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+
+  PublicSubnet01Block:
+    Type: String
+    Default: 10.0.0.0/18
+    Description: CIDR block for public subnet 01 within the EKS VPC (used for bastion/jumphosts)
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+
+  PublicSubnet02Block:
+    Type: String
+    Default: 10.0.64.0/18
+    Description: CIDR block for public subnet 02 within the EKS VPC (used for bastion/jumphosts)
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+
+  PrivateSubnet01Block:
+    Type: String
+    Default: 10.0.128.0/18
+    Description: CIDR block for private subnet 01 within the EKS VPC (used for EKS EC2 nodes)
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+
+  PrivateSubnet02Block:
+    Type: String
+    Default: 10.0.192.0/18
+    Description: CIDR block for private subnet 02 within the EKS VPC (used for EKS EC2 nodes)
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: "EKS / EC2 - Network Configuration"
+        Parameters:
+          - VpcId
+          - PublicSubnet1ID
+          - PublicSubnet2ID
+          - PrivateSubnet1ID
+          - PrivateSubnet2ID
+      - Label:
+          default: "EKS / EC2 - Network Configuration (Ignored if existing VPC provided)"
+        Parameters:
+          - VpcBlock
+          - PublicSubnet01Block
+          - PublicSubnet02Block
+          - PrivateSubnet01Block
+          - PrivateSubnet02Block
+
+Conditions:
+  CreateVpc: !Equals [ !Ref VpcId, '' ]
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Condition: CreateVpc
+    Properties:
+      CidrBlock:  !Ref VpcBlock
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Sub '${AWS::StackName}-VPC'
+
+  InternetGateway:
+    Condition: CreateVpc
+    Type: "AWS::EC2::InternetGateway"
+
+  VPCGatewayAttachment:
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    Condition: CreateVpc
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Condition: CreateVpc
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: Public Subnets
+        - Key: Network
+          Value: Public
+
+  PrivateRouteTable01:
+    Type: AWS::EC2::RouteTable
+    Condition: CreateVpc
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: Private Subnet AZ1
+        - Key: Network
+          Value: Private01
+
+  PrivateRouteTable02:
+    Type: AWS::EC2::RouteTable
+    Condition: CreateVpc
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: Private Subnet AZ2
+        - Key: Network
+          Value: Private02
+
+  PublicRoute:
+    DependsOn: VPCGatewayAttachment
+    Type: AWS::EC2::Route
+    Condition: CreateVpc
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PrivateRoute01:
+    DependsOn:
+      - VPCGatewayAttachment
+      - NatGateway01
+    Type: AWS::EC2::Route
+    Condition: CreateVpc
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable01
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway01
+
+  PrivateRoute02:
+    DependsOn:
+      - VPCGatewayAttachment
+      - NatGateway02
+    Type: AWS::EC2::Route
+    Condition: CreateVpc
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable02
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway02
+
+  NatGateway01:
+    DependsOn:
+      - NatGatewayEIP1
+      - PublicSubnet01
+      - VPCGatewayAttachment
+    Type: AWS::EC2::NatGateway
+    Condition: CreateVpc
+    Properties:
+      AllocationId: !GetAtt 'NatGatewayEIP1.AllocationId'
+      SubnetId: !Ref PublicSubnet01
+      Tags:
+        - Key: Name
+          Value: !Sub '${AWS::StackName}-NatGatewayAZ1'
+
+  NatGateway02:
+    DependsOn:
+      - NatGatewayEIP2
+      - PublicSubnet02
+      - VPCGatewayAttachment
+    Type: AWS::EC2::NatGateway
+    Condition: CreateVpc
+    Properties:
+      AllocationId: !GetAtt 'NatGatewayEIP2.AllocationId'
+      SubnetId: !Ref PublicSubnet02
+      Tags:
+        - Key: Name
+          Value: !Sub '${AWS::StackName}-NatGatewayAZ2'
+
+  NatGatewayEIP1:
+    DependsOn:
+      - VPCGatewayAttachment
+    Type: 'AWS::EC2::EIP'
+    Condition: CreateVpc
+    Properties:
+      Domain: vpc
+
+  NatGatewayEIP2:
+    Condition: CreateVpc
+    DependsOn:
+      - VPCGatewayAttachment
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      Domain: vpc
+
+  NatGatewayEIP3:
+    Condition: CreateVpc
+    DependsOn:
+      - VPCGatewayAttachment
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      Domain: vpc
+
+  PublicSubnet01:
+    Condition: CreateVpc
+    Type: AWS::EC2::Subnet
+    Metadata:
+      Comment: Subnet 01
+    Properties:
+      MapPublicIpOnLaunch: true
+      AvailabilityZone:
+        Fn::Select:
+          - '0'
+          - Fn::GetAZs:
+              Ref: AWS::Region
+      CidrBlock:
+        Ref: PublicSubnet01Block
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-PublicSubnet01"
+        - Key: kubernetes.io/role/elb
+          Value: 1
+
+  PublicSubnet02:
+    Condition: CreateVpc
+    Type: AWS::EC2::Subnet
+    Metadata:
+      Comment: Subnet 02
+    Properties:
+      MapPublicIpOnLaunch: true
+      AvailabilityZone:
+        Fn::Select:
+          - '1'
+          - Fn::GetAZs:
+              Ref: AWS::Region
+      CidrBlock:
+        Ref: PublicSubnet02Block
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-PublicSubnet02"
+        - Key: kubernetes.io/role/elb
+          Value: 1
+
+  PrivateSubnet01:
+    Condition: CreateVpc
+    Type: AWS::EC2::Subnet
+    Metadata:
+      Comment: Subnet 01
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - '0'
+          - Fn::GetAZs:
+              Ref: AWS::Region
+      CidrBlock:
+        Ref: PrivateSubnet01Block
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-PrivateSubnet01"
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
+
+  PrivateSubnet02:
+    Condition: CreateVpc
+    Type: AWS::EC2::Subnet
+    Metadata:
+      Comment: Private Subnet 02
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - '1'
+          - Fn::GetAZs:
+              Ref: AWS::Region
+      CidrBlock:
+        Ref: PrivateSubnet02Block
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-PrivateSubnet02"
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
+
+  PublicSubnet01RouteTableAssociation:
+    Condition: CreateVpc
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet01
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnet02RouteTableAssociation:
+    Condition: CreateVpc
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet02
+      RouteTableId: !Ref PublicRouteTable
+
+  PrivateSubnet01RouteTableAssociation:
+    Condition: CreateVpc
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet01
+      RouteTableId: !Ref PrivateRouteTable01
+
+  PrivateSubnet02RouteTableAssociation:
+    Condition: CreateVpc
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet02
+      RouteTableId: !Ref PrivateRouteTable02
+
+  ControlPlaneSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Cluster communication with worker nodes
+      VpcId: !If [ CreateVpc, !Ref VPC, !Ref VpcId ]
+
+Outputs:
+  SubnetIds:
+    Description: Subnet IDs in the VPC
+    Value: !If [ CreateVpc, !Join [ ",", [ !Ref PublicSubnet01, !Ref PublicSubnet02, !Ref PrivateSubnet01, !Ref PrivateSubnet02 ] ], !Join [ ",", [ !Ref PublicSubnet1ID, !Ref PublicSubnet2ID, !Ref PrivateSubnet1ID, !Ref PrivateSubnet2ID ] ] ]
+
+  PublicSubnetIds:
+    Description: Subnet IDs of public subnets in the VPC
+    Value: !If [ CreateVpc, !Join [ ",", [ !Ref PublicSubnet01, !Ref PublicSubnet02 ] ], !Join [ ",", [ !Ref PublicSubnet1ID, !Ref PublicSubnet2ID ] ] ]
+
+  PrivateSubnetIds:
+    Description: Subnet IDs of private subnets in the VPC
+    Value: !If [ CreateVpc, !Join [ ",", [ !Ref PrivateSubnet01, !Ref PrivateSubnet02 ] ], !Join [ ",", [ !Ref PrivateSubnet1ID, !Ref PrivateSubnet2ID ] ] ]
+
+  ControlPlaneSecurityGroup:
+    Description: Security group for the cluster control plane communication with worker nodes
+    Value: !Ref ControlPlaneSecurityGroup
+
+  VpcId:
+    Description: The VPC Id
+    Value: !If [ CreateVpc, !Ref VPC, !Ref VpcId ]
