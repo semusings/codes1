@@ -1,0 +1,13 @@
+type: object
+properties:
+  productId:
+    description: Product identifier
+    type: string
+    minLength: 5
+    maxLength: 5
+    example: X0Q01
+  productName:
+    description: Product name
+    type: string
+    minLength: 4
+    example: Apple

@@ -1,0 +1,16 @@
+X-Page:
+  description: The page that is fetched
+  schema:
+    type: integer
+X-Page-Size:
+  description: The page size that is fetched
+  schema:
+    type: integer
+X-Total-Count:
+  description: The total elements
+  schema:
+    type: integer
+X-Sort-By:
+  description: The sort info
+  schema:
+    type: string

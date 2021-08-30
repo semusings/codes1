@@ -1,0 +1,478 @@
+openapi: 3.0.2
+info:
+  version: 1.0.0
+  title: Example.com
+  termsOfService: 'https://example.com/terms/'
+  contact:
+    email: contact@example.com
+    url: 'http://example.com/contact'
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  x-logo:
+    url: >-
+      https://raw.githubusercontent.com/zbytes/zbytes.github.io/master/backup/logos/logo.png
+  description: >
+    This is an **example** API to demonstrate features of OpenAPI specification
+
+    # Introduction
+
+    This API definition is intended to to be a good starting point for
+    describing your API in 
+
+    [OpenAPI/Swagger
+    format](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md).
+
+    It also demonstrates features of
+    [create-openapi-repo](https://github.com/Redocly/create-openapi-repo) tool
+    and 
+
+    [Redoc](https://github.com/Redocly/Redoc) documentation engine. So beyond
+    the standard OpenAPI syntax we use a few 
+
+    [vendor
+    extensions](https://github.com/Redocly/Redoc/blob/master/docs/redoc-vendor-extensions.md).
+
+
+    # OpenAPI Specification
+
+    The goal of The OpenAPI Specification is to define a standard,
+    language-agnostic interface to REST APIs which
+
+    allows both humans and computers to discover and understand the capabilities
+    of the service without access to source
+
+    code, documentation, or through network traffic inspection. When properly
+    defined via OpenAPI, a consumer can 
+
+    understand and interact with the remote service with a minimal amount of
+    implementation logic. Similar to what
+
+    interfaces have done for lower-level programming, OpenAPI removes the
+    guesswork in calling the service.
+externalDocs:
+  description: Find out how to create a GitHub repo for your OpenAPI definition.
+  url: 'https://github.com/Rebilly/generator-openapi-repo'
+tags:
+  - name: User
+    description: Operations about user
+servers:
+  - url: 'http://example.com/api/v1'
+  - url: 'https://example.com/api/v1'
+paths:
+  /users:
+    get:
+      tags:
+        - User
+      summary: Get users
+      description: |
+        Some description of the operation.
+        You can use `markdown` here.
+      operationId: getUsers
+      parameters:
+        - name: page
+          in: query
+          description: The page that needs to be fetched
+          required: true
+          schema:
+            type: integer
+        - name: size
+          in: query
+          description: The size that needs to be fetched
+          required: true
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          description: The sort that needs to be fetched
+          schema:
+            type: string
+      security:
+        - main_auth:
+            - 'read:users'
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Page:
+              description: The page that is fetched
+              schema:
+                type: integer
+            X-Page-Size:
+              description: The page size that is fetched
+              schema:
+                type: integer
+            X-Total-Count:
+              description: The total elements
+              schema:
+                type: integer
+            X-Sort-By:
+              description: The sort info
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+              example:
+                - username: user1
+                  email: user@example.com
+        '403':
+          description: Forbidden
+    post:
+      tags:
+        - User
+      summary: Created user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      security:
+        - main_auth:
+            - 'write:users'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid user supplied
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Created user object
+        required: true
+  '/users/{username}':
+    get:
+      tags:
+        - User
+      summary: Get user by user name
+      description: |
+        Some description of the operation.
+        You can use `markdown` here.
+      operationId: getUserByName
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be fetched
+          required: true
+          schema:
+            type: string
+        - name: with_email
+          in: query
+          description: Filter users without email
+          schema:
+            type: boolean
+      security:
+        - main_auth:
+            - 'read:users'
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                username: user1
+                email: user@example.com
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+    put:
+      tags:
+        - User
+      summary: Updated user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be updated
+          required: true
+          schema:
+            type: string
+      security:
+        - main_auth:
+            - 'write:users'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid user supplied
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Updated user object
+        required: true
+    delete:
+      tags:
+        - User
+      summary: Deleted user
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be deleted
+          required: true
+          schema:
+            type: string
+      security:
+        - main_auth:
+            - 'write:users'
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: User not found
+  /products:
+    get:
+      tags:
+        - Product
+      summary: Get products
+      description: |
+        Some description of the operation.
+        You can use `markdown` here.
+      operationId: getProducts
+      parameters:
+        - name: page
+          in: query
+          description: The page that needs to be fetched
+          required: true
+          schema:
+            type: integer
+        - name: size
+          in: query
+          description: The size that needs to be fetched
+          required: true
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          description: The sort that needs to be fetched
+          schema:
+            type: string
+      security:
+        - main_auth:
+            - 'read:products'
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Page:
+              description: The page that is fetched
+              schema:
+                type: integer
+            X-Page-Size:
+              description: The page size that is fetched
+              schema:
+                type: integer
+            X-Total-Count:
+              description: The total elements
+              schema:
+                type: integer
+            X-Sort-By:
+              description: The sort info
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+              example:
+                - productName: product1
+        '403':
+          description: Forbidden
+    post:
+      tags:
+        - Product
+      summary: Created product
+      description: This can only be done by the logged in product.
+      operationId: createProduct
+      security:
+        - main_auth:
+            - 'write:products'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid product supplied
+        '403':
+          description: Forbidden
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Product'
+        description: Created product object
+        required: true
+  '/products/{productId}':
+    get:
+      tags:
+        - Product
+      summary: Get product by product id
+      description: |
+        Some description of the operation.
+        You can use `markdown` here.
+      operationId: getProductById
+      parameters:
+        - name: productId
+          in: path
+          description: The id that needs to be fetched
+          required: true
+          schema:
+            type: string
+      security:
+        - main_auth:
+            - 'read:products'
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+              example:
+                productName: product1
+        '403':
+          description: Forbidden
+        '404':
+          description: Product not found
+    put:
+      tags:
+        - Product
+      summary: Updated product
+      description: This can only be done by the logged in product.
+      operationId: updateProduct
+      parameters:
+        - name: productId
+          in: path
+          description: The id that needs to be updated
+          required: true
+          schema:
+            type: string
+      security:
+        - main_auth:
+            - 'write:products'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid product supplied
+        '403':
+          description: Forbidden
+        '404':
+          description: Product not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Product'
+        description: Updated product object
+        required: true
+    delete:
+      tags:
+        - Product
+      summary: Deleted product
+      description: This can only be done by the logged in product.
+      operationId: deleteProduct
+      parameters:
+        - name: productId
+          in: path
+          description: The id that needs to be deleted
+          required: true
+          schema:
+            type: string
+      security:
+        - main_auth:
+            - 'write:products'
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Product not found
+components:
+  securitySchemes:
+    main_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'http://example.com/api/oauth/dialog'
+          scopes:
+            'read:users': read users info
+            'write:users': modify or remove users
+            'read:products': read products info
+            'write:products': modify or remove products
+    api_key:
+      type: apiKey
+      in: header
+      name: api_key
+    basic_auth:
+      type: http
+      scheme: basic
+  schemas:
+    Email:
+      description: User email address
+      type: string
+      format: test
+      example: john.smith@example.com
+    User:
+      type: object
+      properties:
+        username:
+          description: User supplied username
+          type: string
+          minLength: 4
+          example: John78
+        firstName:
+          description: User first name
+          type: string
+          minLength: 1
+          example: John
+        lastName:
+          description: User last name
+          type: string
+          minLength: 1
+          example: Smith
+        email:
+          $ref: '#/components/schemas/Email'
+    Product:
+      type: object
+      properties:
+        productId:
+          description: Product identifier
+          type: string
+          minLength: 5
+          maxLength: 5
+          example: X0Q01
+        productName:
+          description: Product name
+          type: string
+          minLength: 4
+          example: Apple

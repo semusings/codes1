@@ -1,0 +1,88 @@
+get:
+  tags:
+    - Product
+  summary: Get product by product id
+  description: |
+    Some description of the operation.
+    You can use `markdown` here.
+  operationId: getProductById
+  parameters:
+    - name: productId
+      in: path
+      description: The id that needs to be fetched
+      required: true
+      schema:
+        type: string
+  security:
+    - main_auth:
+        - 'read:products'
+    - api_key: []
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Product.yaml
+          example:
+            productName: product1
+    '403':
+      description: Forbidden
+    '404':
+      description: Product not found
+put:
+  tags:
+    - Product
+  summary: Updated product
+  description: This can only be done by the logged in product.
+  operationId: updateProduct
+  parameters:
+    - name: productId
+      in: path
+      description: The id that needs to be updated
+      required: true
+      schema:
+        type: string
+  security:
+    - main_auth:
+        - 'write:products'
+  responses:
+    '200':
+      description: OK
+    '400':
+      description: Invalid product supplied
+    '404':
+      description: Product not found
+    '403':
+      description: Forbidden
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/Product.yaml
+      application/xml:
+        schema:
+          $ref: ../components/schemas/Product.yaml
+    description: Updated product object
+    required: true
+delete:
+  tags:
+    - Product
+  summary: Deleted product
+  description: This can only be done by the logged in product.
+  operationId: deleteProduct
+  parameters:
+    - name: productId
+      in: path
+      description: The id that needs to be deleted
+      required: true
+      schema:
+        type: string
+  security:
+    - main_auth:
+        - 'write:products'
+  responses:
+    '200':
+      description: OK
+    '404':
+      description: Product not found

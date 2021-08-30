@@ -1,0 +1,71 @@
+get:
+  tags:
+    - Product
+  summary: Get products
+  description: |
+    Some description of the operation.
+    You can use `markdown` here.
+  operationId: getProducts
+  parameters:
+    - name: page
+      in: query
+      description: The page that needs to be fetched
+      required: true
+      schema:
+        type: integer
+    - name: size
+      in: query
+      description: The size that needs to be fetched
+      required: true
+      schema:
+        type: integer
+    - name: sort
+      in: query
+      description: The sort that needs to be fetched
+      schema:
+        type: string
+  security:
+    - main_auth:
+        - 'read:products'
+    - api_key: [ ]
+  responses:
+    '200':
+      description: Success
+      headers:
+        $ref: ../components/headers/PageInfo.yaml
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/Product.yaml
+          example:
+            - productName: product1
+    '403':
+      description: Forbidden
+post:
+  tags:
+    - Product
+  summary: Created product
+  description: This can only be done by the logged in product.
+  operationId: createProduct
+  security:
+    - main_auth:
+        - 'write:products'
+  responses:
+    '200':
+      description: OK
+    '400':
+      description: Invalid product supplied
+    '403':
+      description: Forbidden
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/Product.yaml
+      application/xml:
+        schema:
+          $ref: ../components/schemas/Product.yaml
+    description: Created product object
+    required: true
