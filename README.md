@@ -1,5 +1,5 @@
-# zbytes - Code Examples
+# CS | Blogs, FSQs, Tips & Tricks, Notes - Code Examples
 
-Codes, FSQs, Tips & Tricks and Notes
+CS | Blogs, FSQs, Tips & Tricks, Notes
 
-Website: [zbytes.github.io](https://zbytes.github.io/)
+Website: [bhuwanupadhyay.github.io](https://bhuwanupadhyay.github.io/)
