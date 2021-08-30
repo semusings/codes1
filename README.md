@@ -1,4 +1,4 @@
-# CS | Blogs, FSQs, Tips & Tricks, Notes - Code Examples
+# CS | Blogs, FSQs, Tips & Tricks, Notes
 
 CS | Blogs, FSQs, Tips & Tricks, Notes
 
