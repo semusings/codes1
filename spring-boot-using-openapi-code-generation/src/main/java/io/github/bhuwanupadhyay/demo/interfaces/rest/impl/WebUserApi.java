@@ -1,9 +1,9 @@
-package io.github.zbytes.demo.interfaces.rest.impl;
+package io.github.bhuwanupadhyay.demo.interfaces.rest.impl;
 
-import io.github.zbytes.demo.domain.model.UserEntity;
-import io.github.zbytes.demo.domain.repository.UserRepository;
-import io.github.zbytes.demo.interfaces.rest.UserApi;
-import io.github.zbytes.demo.interfaces.rest.dto.User;
+import io.github.bhuwanupadhyay.demo.domain.model.UserEntity;
+import io.github.bhuwanupadhyay.demo.domain.repository.UserRepository;
+import io.github.bhuwanupadhyay.demo.interfaces.rest.UserApi;
+import io.github.bhuwanupadhyay.demo.interfaces.rest.dto.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.github.zbytes.demo.interfaces.rest.impl.WebUtils.*;
+import static io.github.bhuwanupadhyay.demo.interfaces.rest.impl.WebUtils.*;
 
 @RestController
 class WebUserApi implements UserApi {

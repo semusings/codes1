@@ -1,4 +1,4 @@
-package io.github.zbytes.demo.interfaces.rest.dto;
+package io.github.bhuwanupadhyay.demo.interfaces.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;

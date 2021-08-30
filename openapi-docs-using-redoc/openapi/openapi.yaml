@@ -10,7 +10,7 @@ info:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
   x-logo:
-    url: 'https://raw.githubusercontent.com/zbytes/zbytes.github.io/master/backup/logos/logo.png'
+    url: 'https://raw.githubusercontent.com/bhuwanupadhyay/bhuwanupadhyay.github.io/master/source/img/bhuwan.png'
   description: >
     This is an **example** API to demonstrate features of OpenAPI specification
 

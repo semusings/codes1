@@ -1,4 +1,4 @@
-package io.github.zbytes.app;
+package io.github.bhuwanupadhyay.app;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;

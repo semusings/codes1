@@ -1,4 +1,4 @@
-package io.github.zbytes.demo.domain.model;
+package io.github.bhuwanupadhyay.demo.domain.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;

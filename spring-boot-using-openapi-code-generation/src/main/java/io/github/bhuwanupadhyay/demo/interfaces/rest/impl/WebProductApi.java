@@ -1,9 +1,9 @@
-package io.github.zbytes.demo.interfaces.rest.impl;
+package io.github.bhuwanupadhyay.demo.interfaces.rest.impl;
 
-import io.github.zbytes.demo.domain.model.ProductEntity;
-import io.github.zbytes.demo.domain.repository.ProductRepository;
-import io.github.zbytes.demo.interfaces.rest.ProductApi;
-import io.github.zbytes.demo.interfaces.rest.dto.Product;
+import io.github.bhuwanupadhyay.demo.domain.model.ProductEntity;
+import io.github.bhuwanupadhyay.demo.domain.repository.ProductRepository;
+import io.github.bhuwanupadhyay.demo.interfaces.rest.ProductApi;
+import io.github.bhuwanupadhyay.demo.interfaces.rest.dto.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.github.zbytes.demo.interfaces.rest.impl.WebUtils.*;
+import static io.github.bhuwanupadhyay.demo.interfaces.rest.impl.WebUtils.*;
 
 @RestController
 class WebProductApi implements ProductApi {

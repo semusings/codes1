@@ -1,4 +1,4 @@
-package io.github.zbytes.demo.interfaces.rest.impl;
+package io.github.bhuwanupadhyay.demo.interfaces.rest.impl;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.CrudRepository;

@@ -3,9 +3,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-package io.github.zbytes.demo.interfaces.rest;
+package io.github.bhuwanupadhyay.demo.interfaces.rest;
 
-import io.github.zbytes.demo.interfaces.rest.dto.User;
+import io.github.bhuwanupadhyay.demo.interfaces.rest.dto.User;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

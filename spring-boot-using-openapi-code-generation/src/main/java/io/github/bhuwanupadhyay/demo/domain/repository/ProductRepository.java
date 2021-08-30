@@ -1,6 +1,6 @@
-package io.github.zbytes.demo.domain.repository;
+package io.github.bhuwanupadhyay.demo.domain.repository;
 
-import io.github.zbytes.demo.domain.model.ProductEntity;
+import io.github.bhuwanupadhyay.demo.domain.model.ProductEntity;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 

@@ -1,4 +1,4 @@
-package io.github.zbytes.app;
+package io.github.bhuwanupadhyay.app;
 
 import java.util.Objects;
 
