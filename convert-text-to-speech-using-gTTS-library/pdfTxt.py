@@ -4,6 +4,7 @@ import PyPDF2
 import os
  
 from gtts import gTTS
+from playsound import playsound
 
 # read pdf as string
 pdf = PyPDF2.PdfFileReader(str('paper.pdf'))
@@ -20,3 +21,6 @@ if os.path.exists("pdfGTTS.mp3"):
 else:
   print("The file does not exist")
 pdfGTTS.save("pdfGTTS.mp3")
+
+# play mp3
+playsound("pdfGTTS.mp3")
