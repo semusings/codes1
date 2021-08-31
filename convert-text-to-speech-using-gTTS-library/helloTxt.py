@@ -12,6 +12,8 @@ if os.path.exists("helloGTTS.mp3"):
   os.remove("helloGTTS.mp3")
 else:
   print("The file does not exist")
+
+# write mp3 file  
 helloGTTS.save("helloGTTS.mp3")
 
 # play mp3

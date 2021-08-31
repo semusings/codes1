@@ -16,10 +16,14 @@ for page in pdf.pages:
 pdfTxt=buf.getvalue()
 language='en'
 pdfGTTS=gTTS(text=pdfTxt,lang=language,slow=False)
+
+# delete if file exits
 if os.path.exists("pdfGTTS.mp3"):
   os.remove("pdfGTTS.mp3")
 else:
   print("The file does not exist")
+
+# write mp3 file  
 pdfGTTS.save("pdfGTTS.mp3")
 
 # play mp3
