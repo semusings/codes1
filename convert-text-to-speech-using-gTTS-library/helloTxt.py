@@ -4,17 +4,19 @@ import os
 from gtts import gTTS
 from playsound import playsound
 
+outputFile='helloGTTS.mp3'
+
 # convert text to speech
 helloTxt="Hello Everyone! This is Bhuwan Prasad Upadhyay! Welcome to Convert Text To Speech using GTTS Library"
 language='en'
 helloGTTS=gTTS(text=helloTxt,lang=language,slow=False)
-if os.path.exists("helloGTTS.mp3"):
-  os.remove("helloGTTS.mp3")
+if os.path.exists(outputFile):
+  os.remove(outputFile)
 else:
   print("The file does not exist")
 
 # write mp3 file  
-helloGTTS.save("helloGTTS.mp3")
+helloGTTS.save(outputFile)
 
 # play mp3
-playsound("helloGTTS.mp3")
+playsound(outputFile)
