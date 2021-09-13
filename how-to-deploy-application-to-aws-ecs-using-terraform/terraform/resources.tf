@@ -63,7 +63,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_role_policy" {
 }
 
 resource "aws_alb" "application_load_balancer" {
-  name = "test-lb-tf"
+  name = "${var.release_name}-ecs-lb"
   load_balancer_type = "application"
   subnets = data.aws_subnet_ids.selected.ids
   security_groups = [
@@ -94,7 +94,7 @@ resource "aws_security_group" "load_balancer_security_group" {
 }
 
 resource "aws_lb_target_group" "target_group" {
-  name = "target-group"
+  name = "${var.release_name}-ecs-target-group"
   port = 80
   protocol = "HTTP"
   target_type = "ip"
