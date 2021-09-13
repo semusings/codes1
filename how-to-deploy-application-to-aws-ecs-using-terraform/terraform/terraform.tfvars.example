@@ -1,0 +1,3 @@
+ecs_region = "us-east-1"
+vpc_id = ""
+api_ecr_repo_name = ""
