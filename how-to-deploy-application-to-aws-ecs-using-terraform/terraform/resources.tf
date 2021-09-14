@@ -72,6 +72,8 @@ resource "aws_alb" "application_load_balancer" {
 }
 
 resource "aws_security_group" "load_balancer_security_group" {
+  vpc_id = data.aws_vpc.selected.id
+
   ingress {
     from_port = 80
     to_port = 80
@@ -134,6 +136,7 @@ resource "aws_ecs_service" "api_ecs_service" {
 }
 
 resource "aws_security_group" "service_security_group" {
+  vpc_id = data.aws_vpc.selected.id
   ingress {
     from_port = 0
     to_port = 0
